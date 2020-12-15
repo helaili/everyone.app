@@ -1,12 +1,25 @@
 const nock = require("nock");
+
 // Requiring our app implementation
 const myProbotApp = require("..");
 const { Probot, ProbotOctokit } = require("probot");
-// Requiring our fixtures
-const payload = require("./fixtures/issues.opened");
-const issueCreatedBody = { body: "Thanks for opening this issue!" };
+
 const fs = require("fs");
 const path = require("path");
+
+// Requiring our fixtures
+const payload = require("./fixtures/installation.unsuspend");
+const orgMemberPages = [
+  require("./fixtures/org.members.1"),
+  require("./fixtures/org.members.2"),
+  require("./fixtures/org.members.3")
+]
+const teamCreation = {
+  name: 'everyone'
+}
+const teamCreated = {
+  slug: 'everyone'
+}
 
 const privateKey = fs.readFileSync(
   path.join(__dirname, "fixtures/mock-cert.pem"),
@@ -19,7 +32,7 @@ describe("My Probot app", () => {
   beforeEach(() => {
     nock.disableNetConnect();
     probot = new Probot({
-      id: 123,
+      appId: 123,
       privateKey,
       // disable request throttling and retries for testing
       Octokit: ProbotOctokit.defaults({
@@ -31,28 +44,51 @@ describe("My Probot app", () => {
     probot.load(myProbotApp);
   });
 
-  test("creates a comment when an issue is opened", async () => {
-    const mock = nock("https://api.github.com")
+  test("creates a team when the app is installed", async () => {
+    nock("https://api.github.com")
       // Test that we correctly return a test token
       .post("/app/installations/2/access_tokens")
       .reply(200, {
         token: "test",
         permissions: {
-          issues: "write",
+          members: "write"
         },
       })
 
-      // Test that a comment is posted
-      .post("/repos/hiimbex/testing-things/issues/1/comments", (body) => {
-        expect(body).toMatchObject(issueCreatedBody);
+    // Test that a team is created
+    const createTeamMock = nock("https://api.github.com")
+      .post("/orgs/myorg/teams", (body) => {
+        expect(body).toMatchObject(teamCreation);
         return true;
       })
-      .reply(200);
+      .reply(200, teamCreated)
 
-    // Receive a webhook event
-    await probot.receive({ name: "issues", payload });
-
-    expect(mock.pendingMocks()).toStrictEqual([]);
+    let listOrgMembersMock = nock("https://api.github.com")
+    for (let orgMemberPageCount = 0; orgMemberPageCount < orgMemberPages.length; orgMemberPageCount++) {
+      listOrgMembersMock
+        .get(`/orgs/myorg/members?per_page=5&page=${orgMemberPageCount+1}`)
+        .reply(200, orgMemberPages[orgMemberPageCount])
+    }
+    
+    let addMembersToTeamMock = nock("https://api.github.com")
+    for (let userCount = 0; userCount < 12; userCount++) {
+      addMembersToTeamMock.put(`/orgs/myorg/teams/everyone/memberships/user${userCount}`)
+        .reply(200, {
+          'url': `https://api.github.com/teams/1/memberships/user${userCount}`,
+          'role': 'member',
+          'state': 'active'
+        })
+    }
+      
+    await probot.receive({ name: "installation", payload });
+    
+    // The team is created
+    expect(createTeamMock.pendingMocks()).toStrictEqual([])
+    // We got all the members - need to wait a bit for all the promises to be completed
+    setTimeout(() => {
+      expect(listOrgMembersMock.pendingMocks()).toStrictEqual([])
+      expect(addMembersToTeamMock.pendingMocks()).toStrictEqual([])
+    }, 5000)
   });
 
   afterEach(() => {
@@ -60,9 +96,3 @@ describe("My Probot app", () => {
     nock.enableNetConnect();
   });
 });
-
-// For more information about testing with Jest see:
-// https://facebook.github.io/jest/
-
-// For more information about testing with Nock see:
-// https://github.com/nock/nock
