@@ -50,8 +50,6 @@ module.exports = ({ app }) =>  {
   })
 }
 
-
-
 async function createTeam(context, org, name) {
   return context.octokit.teams.create({
     org: org,
