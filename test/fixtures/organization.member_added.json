@@ -1,0 +1,79 @@
+{
+  "action": "member_added",
+  "membership": {
+    "url": "https://api.github.com/orgs/octodemo-scim/memberships/halain987",
+    "state": "active",
+    "role": "member",
+    "organization_url": "https://api.github.com/orgs/octodemo-scim",
+    "user": {
+      "login": "user12",
+      "id": 18029382,
+      "node_id": "MDQ6VXNlcjE4MDI5Mzgy",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/18029382?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/halain987",
+      "html_url": "https://github.com/halain987",
+      "followers_url": "https://api.github.com/users/halain987/followers",
+      "following_url": "https://api.github.com/users/halain987/following{/other_user}",
+      "gists_url": "https://api.github.com/users/halain987/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/halain987/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/halain987/subscriptions",
+      "organizations_url": "https://api.github.com/users/halain987/orgs",
+      "repos_url": "https://api.github.com/users/halain987/repos",
+      "events_url": "https://api.github.com/users/halain987/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/halain987/received_events",
+      "type": "User",
+      "site_admin": false
+    }
+  },
+  "organization": {
+    "login": "octodemo-scim",
+    "id": 75094614,
+    "node_id": "MDEyOk9yZ2FuaXphdGlvbjc1MDk0NjE0",
+    "url": "https://api.github.com/orgs/octodemo-scim",
+    "repos_url": "https://api.github.com/orgs/octodemo-scim/repos",
+    "events_url": "https://api.github.com/orgs/octodemo-scim/events",
+    "hooks_url": "https://api.github.com/orgs/octodemo-scim/hooks",
+    "issues_url": "https://api.github.com/orgs/octodemo-scim/issues",
+    "members_url": "https://api.github.com/orgs/octodemo-scim/members{/member}",
+    "public_members_url": "https://api.github.com/orgs/octodemo-scim/public_members{/member}",
+    "avatar_url": "https://avatars3.githubusercontent.com/u/75094614?v=4",
+    "description": null
+  },
+  "enterprise": {
+    "id": 118,
+    "slug": "octodemo",
+    "name": "Octodemo",
+    "node_id": "MDEwOkVudGVycHJpc2UxMTg=",
+    "avatar_url": "https://avatars0.githubusercontent.com/b/118?v=4",
+    "description": "",
+    "website_url": "",
+    "html_url": "https://github.com/enterprises/octodemo",
+    "created_at": "2019-05-06T13:13:38Z",
+    "updated_at": "2020-04-14T00:30:53Z"
+  },
+  "sender": {
+    "login": "helaili",
+    "id": 2787414,
+    "node_id": "MDQ6VXNlcjI3ODc0MTQ=",
+    "avatar_url": "https://avatars0.githubusercontent.com/u/2787414?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/helaili",
+    "html_url": "https://github.com/helaili",
+    "followers_url": "https://api.github.com/users/helaili/followers",
+    "following_url": "https://api.github.com/users/helaili/following{/other_user}",
+    "gists_url": "https://api.github.com/users/helaili/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/helaili/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/helaili/subscriptions",
+    "organizations_url": "https://api.github.com/users/helaili/orgs",
+    "repos_url": "https://api.github.com/users/helaili/repos",
+    "events_url": "https://api.github.com/users/helaili/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/helaili/received_events",
+    "type": "User",
+    "site_admin": true
+  },
+  "installation": {
+    "id": 13537924,
+    "node_id": "MDIzOkludGVncmF0aW9uSW5zdGFsbGF0aW9uMTM1Mzc5MjQ="
+  }
+}

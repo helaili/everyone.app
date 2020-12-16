@@ -30,7 +30,27 @@ module.exports = ({ app }) =>  {
       })
     })
   })
+
+  app.on('organization.member_added', async context => {
+    const org = context.payload.organization.login
+    const member = context.payload.membership.user
+
+    context.log.debug({
+      event: context.name,
+      action: context.payload.action,
+      org: org,
+      member: member.login
+    })
+
+    context.octokit.teams.addOrUpdateMembershipForUserInOrg({
+      org: org,
+      team_slug: 'everyone',
+      username: member.login
+    })
+  })
 }
+
+
 
 async function createTeam(context, org, name) {
   return context.octokit.teams.create({

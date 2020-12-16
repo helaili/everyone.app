@@ -1,18 +1,19 @@
-const nock = require("nock");
+const nock = require('nock');
 
 // Requiring our app implementation
-const myProbotApp = require("..");
-const { Probot, ProbotOctokit } = require("probot");
+const myProbotApp = require('..');
+const { Probot, ProbotOctokit } = require('probot');
 
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 
 // Requiring our fixtures
-const payload = require("./fixtures/installation.unsuspend");
+const installationUnsuspendPayload = require('./fixtures/installation.unsuspend');
+const organizationMemberAddedPayload = require('./fixtures/organization.member_added');
 const orgMemberPages = [
-  require("./fixtures/org.members.1"),
-  require("./fixtures/org.members.2"),
-  require("./fixtures/org.members.3")
+  require('./fixtures/org.members.1'),
+  require('./fixtures/org.members.2'),
+  require('./fixtures/org.members.3')
 ]
 const teamCreation = {
   name: 'everyone'
@@ -22,11 +23,11 @@ const teamCreated = {
 }
 
 const privateKey = fs.readFileSync(
-  path.join(__dirname, "fixtures/mock-cert.pem"),
-  "utf-8"
+  path.join(__dirname, 'fixtures/mock-cert.pem'),
+  'utf-8'
 );
 
-describe("My Probot app", () => {
+describe('My Probot app', () => {
   let probot;
 
   beforeEach(() => {
@@ -44,33 +45,35 @@ describe("My Probot app", () => {
     probot.load(myProbotApp);
   });
 
-  test("creates a team when the app is installed", async () => {
-    nock("https://api.github.com")
+  test('creates a team when the app is installed', async () => {
+    nock('https://api.github.com')
       // Test that we correctly return a test token
-      .post("/app/installations/2/access_tokens")
+      .post('/app/installations/2/access_tokens')
       .reply(200, {
-        token: "test",
+        token: 'test',
         permissions: {
-          members: "write"
+          members: 'write'
         },
       })
 
     // Test that a team is created
-    const createTeamMock = nock("https://api.github.com")
-      .post("/orgs/myorg/teams", (body) => {
+    const createTeamMock = nock('https://api.github.com')
+      .post('/orgs/myorg/teams', (body) => {
         expect(body).toMatchObject(teamCreation);
         return true;
       })
       .reply(200, teamCreated)
 
-    let listOrgMembersMock = nock("https://api.github.com")
+    // Test that org members are retrieved
+    let listOrgMembersMock = nock('https://api.github.com')
     for (let orgMemberPageCount = 0; orgMemberPageCount < orgMemberPages.length; orgMemberPageCount++) {
       listOrgMembersMock
         .get(`/orgs/myorg/members?per_page=5&page=${orgMemberPageCount+1}`)
         .reply(200, orgMemberPages[orgMemberPageCount])
     }
     
-    let addMembersToTeamMock = nock("https://api.github.com")
+    // Test that members are being added to the team
+    let addMembersToTeamMock = nock('https://api.github.com')
     for (let userCount = 0; userCount < 12; userCount++) {
       addMembersToTeamMock.put(`/orgs/myorg/teams/everyone/memberships/user${userCount}`)
         .reply(200, {
@@ -80,7 +83,7 @@ describe("My Probot app", () => {
         })
     }
       
-    await probot.receive({ name: "installation", payload });
+    await probot.receive({ name: 'installation', payload: installationUnsuspendPayload });
     
     // The team is created
     expect(createTeamMock.pendingMocks()).toStrictEqual([])
@@ -90,6 +93,24 @@ describe("My Probot app", () => {
       expect(addMembersToTeamMock.pendingMocks()).toStrictEqual([])
     }, 5000)
   });
+
+  test('add a new org member to the team', async () => {
+    // Test members are being added to the team
+    let addMemberToTeamMock = nock('https://api.github.com')
+      .put(`/orgs/myorg/teams/everyone/memberships/user12`)
+      .reply(200, {
+        'url': `https://api.github.com/teams/1/memberships/user12`,
+        'role': 'member',
+        'state': 'active'
+      })
+
+    await probot.receive({ name: 'organization', payload: organizationMemberAddedPayload });
+    
+    setTimeout(() => {
+      expect(addMemberToTeamMock.pendingMocks()).toStrictEqual([])
+    }, 5000)
+    
+  })
 
   afterEach(() => {
     nock.cleanAll();
