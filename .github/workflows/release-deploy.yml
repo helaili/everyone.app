@@ -23,7 +23,6 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_WEBAPP_NAME: 'everyone-app'   
   AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: '12.x'                # set this to the node version to use
   RESOURCE_GROUP: 'everyone.app'
@@ -32,8 +31,13 @@ jobs:
   qa-build-and-deploy:
     name: QA Build and Deploy
     runs-on: ubuntu-latest
-    
-    environment: qa
+    strategy:
+      fail-fast: true
+      matrix: 
+        env: ['qa', 'production']
+
+    environment: 
+      name: ${{ matrix.env }}
 
     steps:
     - uses: actions/checkout@v2
@@ -61,35 +65,3 @@ jobs:
       run: |
         az webapp config appsettings set -g $RESOURCE_GROUP -n ${{ secrets.AZURE_WEBAPP_NAME }} --settings APP_ID=${{ secrets.APP_ID }} PRIVATE_KEY=${{ secrets.PRIVATE_KEY }} WEBHOOK_SECRET=${{ secrets.WEBHOOK_SECRET }}
 
-
-  prod-build-and-deploy:
-    name: Production Build and Deploy
-    runs-on: ubuntu-latest
-    environment: production
-    needs: qa-build-and-deploy
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ env.NODE_VERSION }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-    - name: npm install, build, and test
-      run: |
-        # Build and test the project, then
-        # deploy to Azure Web App.
-        npm install
-        npm run build --if-present
-        npm run test --if-present
-    - name: Login to Azure
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-    - name: Deploy to Azure WebApp
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
-        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-    - name: Set the environment variables
-      run: |
-        az webapp config appsettings set -g $RESOURCE_GROUP -n ${{ secrets.AZURE_WEBAPP_NAME }} --settings APP_ID=${{ secrets.APP_ID }} PRIVATE_KEY=${{ secrets.PRIVATE_KEY }} WEBHOOK_SECRET=${{ secrets.WEBHOOK_SECRET }}
