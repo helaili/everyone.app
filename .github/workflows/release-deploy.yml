@@ -23,6 +23,7 @@ on:
   workflow_dispatch:
 
 env:
+  AZURE_WEBAPP_NAME: 'everyone-app'   
   AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: '12.x'                # set this to the node version to use
   RESOURCE_GROUP: 'everyone.app'
@@ -59,7 +60,7 @@ jobs:
     - name: Deploy to Azure WebApp
       uses: azure/webapps-deploy@v2
       with:
-        app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
     - name: Set the environment variables
       run: |
