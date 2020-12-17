@@ -20,7 +20,7 @@ name: Production deploy
 on:
   release:
     types: [created]
-  repository_dispatch:
+  workflow_dispatch:
 
 env:
   AZURE_WEBAPP_NAME: 'everyone-app'   # set this to your application's name
