@@ -32,10 +32,13 @@ jobs:
   build-and-deploy:
     name: Build and Deploy
     runs-on: ubuntu-latest
+    
     strategy:
       matrix:
-        environment: ['production', 'qa']
-    environment: ${{ matrix.environment }}
+        env: ['production', 'qa']
+    
+    environment: ${{ matrix.env }}
+
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ env.NODE_VERSION }}
