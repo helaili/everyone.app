@@ -32,7 +32,10 @@ jobs:
   build-and-deploy:
     name: Build and Deploy
     runs-on: ubuntu-latest
-    environment: production
+    strategy:
+      matrix:
+        environment: ['production', 'qa']
+    environment: ${{ matrix.environment }}
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ env.NODE_VERSION }}
@@ -57,4 +60,4 @@ jobs:
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
     - name: Set the environment
       run: |
-        az webapp config appsettings set -g $RESOURCE_GROUP -n $AZURE_WEBAPP_NAME --settings APP_ID=${{ secrets.APP_ID}} PRIVATE_KEY=${{ secrets.PRIVATE_KEY}} WEBHOOK_SECRET=${{ secrets.WEBHOOK_SECRET}}
+        az webapp config appsettings set -g $RESOURCE_GROUP -n $AZURE_WEBAPP_NAME --settings APP_ID=${{ secrets.APP_ID }} PRIVATE_KEY=${{ secrets.PRIVATE_KEY }} WEBHOOK_SECRET=${{ secrets.WEBHOOK_SECRET }}

@@ -23,13 +23,13 @@ default_events:
   # - fork
   # - gollum
   # - issue_comment
-  - issues
+  # - issues
 # - label
 # - milestone
 # - member
 # - membership
 # - org_block
-# - organization
+- organization
 # - page_build
 # - project
 # - project_card
@@ -70,11 +70,11 @@ default_permissions:
 
   # Issues and related comments, assignees, labels, and milestones.
   # https://developer.github.com/v3/apps/permissions/#permission-on-issues
-  issues: write
+  # issues: write
 
   # Search repositories, list collaborators, and access repository metadata.
   # https://developer.github.com/v3/apps/permissions/#metadata-permissions
-  metadata: read
+  # metadata: read
 
   # Retrieve Pages statuses, configuration, and builds, as well as create new builds.
   # https://developer.github.com/v3/apps/permissions/#permission-on-pages
@@ -102,7 +102,7 @@ default_permissions:
 
   # Organization members and teams.
   # https://developer.github.com/v3/apps/permissions/#permission-on-members
-  # members: read
+  members: write
 
   # View and manage users blocked by the organization.
   # https://developer.github.com/v3/apps/permissions/#permission-on-organization-user-blocking
@@ -127,7 +127,7 @@ default_permissions:
 # name: My Probot App
 
 # The homepage of your GitHub App.
-# url: https://example.com/
+url: https://github.com/helaili/everyone-app
 
 # A description of the GitHub App.
 # description: A description of my awesome app
