@@ -99,4 +99,13 @@ jobs:
     - name: Set the environment variables
       run: |
         az webapp config appsettings set -g $RESOURCE_GROUP -n ${{ secrets.AZURE_WEBAPP_NAME }} --settings APP_ID=${{ secrets.APP_ID }} PRIVATE_KEY=${{ secrets.PRIVATE_KEY }} WEBHOOK_SECRET=${{ secrets.WEBHOOK_SECRET }}
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    needs: deploy
+    environment: 
+      name: production
+    steps:
+      - run: echo 'hello'
+
 
