@@ -64,7 +64,7 @@ jobs:
 
     environment: 
       name: ${{ matrix.env }}
-      url: ${{ secrets.URL }}
+      url: https://${{ secrets.AZURE_WEBAPP_NAME  }}.azurewebsites.net
 
     steps:
     - uses: actions/checkout@v2
@@ -100,5 +100,6 @@ jobs:
     - name: Set the environment variables
       run: |
         az webapp config appsettings set -g $RESOURCE_GROUP -n ${{ secrets.AZURE_WEBAPP_NAME }} --settings APP_ID=${{ secrets.APP_ID }} PRIVATE_KEY=${{ secrets.PRIVATE_KEY }} WEBHOOK_SECRET=${{ secrets.WEBHOOK_SECRET }}
+    
 
 
