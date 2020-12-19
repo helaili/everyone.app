@@ -103,9 +103,7 @@ jobs:
     - name: Set the deployment URL
       id: deployment_data
       run: |
-        URL=$(az webapp config hostname list --resource-group $RESOURCE_GROUP --webapp-name ${{ secrets.AZURE_WEBAPP_NAME }} --query [].name[0]  --output tsv)
-        echo $URL
-        echo '::set-output name=URL::${{URL}}'
+        echo "::set-output name=url::`az webapp config hostname list --resource-group $RESOURCE_GROUP --webapp-name ${{ secrets.AZURE_WEBAPP_NAME }} --query [].name[0]  --output tsv | xargs`"
     - name: Debug
       run: |
         echo ${{ steps.deployment_data.outputs.url }}
