@@ -21,6 +21,9 @@ module.exports = ({ app }) =>  {
     return createTeam(context, org, 'everyone').then( ({data: team}) => {
       context.log.debug({
         team: team
+      }).catch(err => {
+        // A team already created will generate an error
+        context.log.error(err) 
       })
       return populateTeam(context, org, team, 1, per_page)
     }).catch(error => {
@@ -77,6 +80,7 @@ async function populateTeam(context, org, team, page = 1, per_page = 100) {
   }
 
   for (const member of members) {
+    // Adding a user to a team is idempotent. 
     context.octokit.teams.addOrUpdateMembershipForUserInOrg({
       org: org,
       team_slug: team.slug,
