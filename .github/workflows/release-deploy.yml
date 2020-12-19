@@ -80,7 +80,7 @@ jobs:
         restore-keys: |
           ${{ runner.OS }}-node-
           ${{ runner.OS }}-
-    - name: npm install, build, and test
+    - name: npm install and build
       run: |
         # Build and test the project, then
         # deploy to Azure Web App.
@@ -100,11 +100,9 @@ jobs:
     - name: Set the environment variables
       run: |
         az webapp config appsettings set -g $RESOURCE_GROUP -n ${{ secrets.AZURE_WEBAPP_NAME }} --settings APP_ID=${{ secrets.APP_ID }} PRIVATE_KEY=${{ secrets.PRIVATE_KEY }} WEBHOOK_SECRET=${{ secrets.WEBHOOK_SECRET }}
-    - name: Set the webapp URL
+    - name: Set the deployment URL
       id: deployment_data
-      uses: actions/github-script@v3
-      with:
-        script: |
-          // core.setOutput('url', `https://${{ secrets.AZURE_WEBAPP_NAME }}.azurewebsites.net`);
-          core.setOutput('url', 'https://everyone-app-qa.azurewebsites.net');
-
+      run: |
+        URL=$(az webapp config hostname list --resource-group $RESOURCE_GROUP --webapp-name ${{ secrets.AZURE_WEBAPP_NAME }} --query [].name[0]  --output tsv)
+        echo '::set-output name=URL::$URL'
+    
