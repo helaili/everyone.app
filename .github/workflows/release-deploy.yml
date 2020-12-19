@@ -103,7 +103,9 @@ jobs:
     - name: Set the webapp URL
       id: deployment_data
       uses: actions/github-script@v3
+      env:
+        AZURE_WEBAPP_NAME: ${{ secrets.AZURE_WEBAPP_NAME }}
       with:
         script: |
-          core.setOutput('url', `https://${{ secrets.AZURE_WEBAPP_NAME }}.azurewebsites.net`);
+          core.setOutput('url', `https://$AZURE_WEBAPP_NAME.azurewebsites.net`);
 
