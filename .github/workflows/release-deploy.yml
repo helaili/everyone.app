@@ -101,9 +101,9 @@ jobs:
       run: |
         az webapp config appsettings set -g $RESOURCE_GROUP -n ${{ secrets.AZURE_WEBAPP_NAME }} --settings APP_ID=${{ secrets.APP_ID }} PRIVATE_KEY=${{ secrets.PRIVATE_KEY }} WEBHOOK_SECRET=${{ secrets.WEBHOOK_SECRET }}
     - name: Set the webapp URL
-        id: deployment_data
-        uses: actions/github-script@v3
-        with:
-          script: |
-            core.setOutput('url', `https://${{ secrets.AZURE_WEBAPP_NAME }}.azurewebsites.net`);
+      id: deployment_data
+      uses: actions/github-script@v3
+      with:
+        script: |
+          core.setOutput('url', `https://${{ secrets.AZURE_WEBAPP_NAME }}.azurewebsites.net`);
 
