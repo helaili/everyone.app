@@ -63,8 +63,8 @@ jobs:
       fail-fast: true
       matrix: 
         env: [
-          {name: 'qa', webapp: 'everyone-app'},
-          {name: 'production', webapp: 'everyone-app-qa'}
+          {name: 'qa', webapp: 'everyone-app-qa'},
+          {name: 'production', webapp: 'everyone-app'}
         ]
 
     environment: 
