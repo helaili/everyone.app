@@ -26,6 +26,8 @@ env:
   AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: '12.x'                # set this to the node version to use
   RESOURCE_GROUP: 'everyone.app'
+  AZURE_WEBAPP_PROD: 'everyone-app' 
+  AZURE_WEBAPP_QA: 'everyone-app-qa' 
 
 jobs:
   build-and-test:
@@ -86,6 +88,17 @@ jobs:
         # deploy to Azure Web App.
         npm install
         npm run build --if-present
+    - name: Set environment specific varialbes
+      id: env_data
+      uses: actions/github-script@v3
+      with:
+        script: |
+          console.log(env.AZURE_WEBAPP_PROD)
+          if (context.matrix.env === 'production') {
+            core.setOutput('webapp', env.AZURE_WEBAPP_PROD);
+          } else if (context.matrix.env === 'qa') {
+            core.setOutput('webapp', env.AZURE_WEBAPP_QA);
+          }
     - name: Login to Azure
       uses: azure/login@v1
       with:
@@ -93,19 +106,15 @@ jobs:
     - name: Deploy to Azure WebApp
       uses: azure/webapps-deploy@v2
       env: 
-        AZURE_WEBAPP_NAME: ${{ secrets.AZURE_WEBAPP_NAME }}
+        AZURE_WEBAPP_NAME: ${{ steps.env_data.outputs.webapp }}
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
     - name: Set the environment variables
       run: |
-        az webapp config appsettings set -g $RESOURCE_GROUP -n ${{ secrets.AZURE_WEBAPP_NAME }} --settings APP_ID=${{ secrets.APP_ID }} PRIVATE_KEY=${{ secrets.PRIVATE_KEY }} WEBHOOK_SECRET=${{ secrets.WEBHOOK_SECRET }}
+        az webapp config appsettings set -g $RESOURCE_GROUP -n ${{ steps.env_data.outputs.webapp }} --settings APP_ID=${{ secrets.APP_ID }} PRIVATE_KEY=${{ secrets.PRIVATE_KEY }} WEBHOOK_SECRET=${{ secrets.WEBHOOK_SECRET }}
     - name: Set the deployment URL
       id: deployment_data
       run: |
-        echo "::set-output name=url::`az webapp config hostname list --resource-group $RESOURCE_GROUP --webapp-name ${{ secrets.AZURE_WEBAPP_NAME }} --query [].name  --output tsv | xargs`"
-    - name: Debug
-      run: |
-        echo ${{ steps.deployment_data.outputs.url }}
-
+        echo "::set-output name=url::`az webapp config hostname list --resource-group $RESOURCE_GROUP --webapp-name ${{ steps.env_data.outputs.webapp }} --query [].name  --output tsv | xargs`"
     
