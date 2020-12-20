@@ -16,6 +16,14 @@ jobs:
         node-version: [12.x, 14.x]
 
     steps:
+    - name: test
+      id: env_data
+      uses: actions/github-script@v3
+      with:
+        script: |
+          console.log(context)
+          console.log()
+          console.log(process)
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
