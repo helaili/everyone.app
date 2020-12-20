@@ -55,6 +55,7 @@ jobs:
         npm install
         npm run build --if-present
         npm run test --if-present
+        
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
@@ -94,9 +95,9 @@ jobs:
       with:
         script: |
           if (context.matrix.env === 'production') {
-            core.setOutput('webapp', `${{ env.AZURE_WEBAPP_PROD }}`);
+            core.setOutput('webapp', process.env.AZURE_WEBAPP_PROD);
           } else if (context.matrix.env === 'qa') {
-            core.setOutput('webapp', `${{ env.AZURE_WEBAPP_QA }}`);
+            core.setOutput('webapp', process.env.AZURE_WEBAPP_QA);
           }
     - name: Login to Azure
       uses: azure/login@v1
