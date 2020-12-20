@@ -96,8 +96,8 @@ jobs:
       with:
         script: |
           console.log(process.env.AZURE_WEBAPP_PROD)
-          console.log(context)
-          // console.log(process)
+          //console.log(context)
+          console.log(process.env)
           /*
           if (context.matrix.env === 'production') {
             core.setOutput('webapp', process.env.AZURE_WEBAPP_PROD);
