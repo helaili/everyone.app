@@ -68,7 +68,7 @@ jobs:
 
     environment: 
       name: ${{ matrix.env }}
-      # url:  ${{ steps.deployment_data.outputs.url }}
+      url:  ${{ steps.deployment_data.outputs.url }}
 
     steps:
     - uses: actions/checkout@v2
