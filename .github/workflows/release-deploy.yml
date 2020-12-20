@@ -93,12 +93,10 @@ jobs:
       uses: actions/github-script@v3
       with:
         script: |
-          console.log(context.env)
-          console.log(process.env)
           if (context.matrix.env === 'production') {
-            core.setOutput('webapp', context.env.AZURE_WEBAPP_PROD);
+            core.setOutput('webapp', '${{ env.AZURE_WEBAPP_PROD }}');
           } else if (context.matrix.env === 'qa') {
-            core.setOutput('webapp', context.env.AZURE_WEBAPP_QA);
+            core.setOutput('webapp', '${{ env.AZURE_WEBAPP_QA }}');
           }
     - name: Login to Azure
       uses: azure/login@v1
