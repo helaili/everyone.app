@@ -93,7 +93,8 @@ jobs:
       uses: actions/github-script@v3
       with:
         script: |
-          console.log(env.AZURE_WEBAPP_PROD)
+          console.log(context.env)
+          console.log(process.env)
           if (context.matrix.env === 'production') {
             core.setOutput('webapp', context.env.AZURE_WEBAPP_PROD);
           } else if (context.matrix.env === 'qa') {
