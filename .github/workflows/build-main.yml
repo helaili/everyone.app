@@ -21,9 +21,7 @@ jobs:
       uses: actions/github-script@v3
       with:
         script: |
-          console.log(context)
-          console.log()
-          console.log(process)
+          console.log(process.env)
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
