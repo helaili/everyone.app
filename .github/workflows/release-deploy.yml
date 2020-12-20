@@ -26,8 +26,6 @@ env:
   AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: '12.x'                # set this to the node version to use
   RESOURCE_GROUP: 'everyone.app'
-  AZURE_WEBAPP_PROD: 'everyone-app' 
-  AZURE_WEBAPP_QA: 'everyone-app-qa' 
 
 jobs:
   build-and-test:
@@ -64,11 +62,14 @@ jobs:
     strategy:
       fail-fast: true
       matrix: 
-        env: ['qa', 'production']
+        env: [
+          {name: 'qa', webapp: 'everyone-app'},
+          {name: 'production', webapp: 'everyone-app-qa'}
+        ]
 
     environment: 
-      name: ${{ matrix.env }}
-      url:  ${{ steps.deployment_data.outputs.url }}
+      name: ${{ matrix.env.name }}
+      url:  'https://${{ matrix.env.webapp }}.azurewebsites.net'
 
     steps:
     - uses: actions/checkout@v2
@@ -90,33 +91,16 @@ jobs:
         # deploy to Azure Web App.
         npm install
         npm run build --if-present
-    - name: Set environment specific variables
-      id: env_data
-      uses: actions/github-script@v3
-      with:
-        script: |
-          let env = '${{matrix.env}}'
-          if (env === 'production') {
-            core.setOutput('webapp', process.env.AZURE_WEBAPP_PROD);
-          } else if (env === 'qa') {
-            core.setOutput('webapp', process.env.AZURE_WEBAPP_QA);
-          }
     - name: Login to Azure
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
     - name: Deploy to Azure WebApp
       uses: azure/webapps-deploy@v2
-      env: 
-        AZURE_WEBAPP_NAME: ${{ steps.env_data.outputs.webapp }}
       with:
-        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        app-name: ${{ matrix.env.webapp }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
     - name: Set the environment variables
       run: |
-        az webapp config appsettings set -g $RESOURCE_GROUP -n ${{ steps.env_data.outputs.webapp }} --settings APP_ID=${{ secrets.APP_ID }} PRIVATE_KEY=${{ secrets.PRIVATE_KEY }} WEBHOOK_SECRET=${{ secrets.WEBHOOK_SECRET }}
-    - name: Set the deployment URL
-      id: deployment_data
-      run: |
-        echo "::set-output name=url::`az webapp config hostname list --resource-group $RESOURCE_GROUP --webapp-name ${{ steps.env_data.outputs.webapp }} --query [].name  --output tsv | xargs`"
+        az webapp config appsettings set -g $RESOURCE_GROUP -n ${{ matrix.env.webapp }} --settings APP_ID=${{ secrets.APP_ID }} PRIVATE_KEY=${{ secrets.PRIVATE_KEY }} WEBHOOK_SECRET=${{ secrets.WEBHOOK_SECRET }}
     
