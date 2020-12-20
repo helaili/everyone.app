@@ -3,8 +3,6 @@ name: Build main branch
 on:
   push:
     branches: [ main ]
-env:
-  AZURE_WEBAPP_QA: 'everyone-app-qa' 
 
 jobs:
   build:
@@ -16,12 +14,6 @@ jobs:
         node-version: [12.x, 14.x]
 
     steps:
-    - name: test
-      id: env_data
-      uses: actions/github-script@v3
-      with:
-        script: |
-          console.log(process.env.AZURE_WEBAPP_QA)
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1

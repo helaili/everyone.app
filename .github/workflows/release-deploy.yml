@@ -60,6 +60,7 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     needs: build-and-test
+
     strategy:
       fail-fast: true
       matrix: 
@@ -74,7 +75,7 @@ jobs:
     - name: Use Node.js ${{ env.NODE_VERSION }}
       uses: actions/setup-node@v1
       with:
-        node-version: ${{ env.NODE_VERSION }}
+        node-version: ${{ env.NODE_VERSION }} 
     - name: Cache Node.js modules
       uses: actions/cache@v2
       with:
@@ -95,6 +96,8 @@ jobs:
       with:
         script: |
           console.log(process.env.AZURE_WEBAPP_PROD)
+          console.log(context)
+          // console.log(process)
           /*
           if (context.matrix.env === 'production') {
             core.setOutput('webapp', process.env.AZURE_WEBAPP_PROD);
