@@ -34,7 +34,7 @@ jobs:
         docker push $DOCKER_REGISTRY_URL/$GITHUB_REPOSITORY/$CONTAINER_NAME:$GITHUB_SHA
   
   azure_create_app:
-    name: Create the app on Azure
+    name: Create the Web App on Azure
     runs-on: ubuntu-latest
     
     environment: 
@@ -48,6 +48,19 @@ jobs:
 
     - name: Create the Azure Web App
       run: az webapp create --resource-group $RESOURCE_GROUP --plan $APP_SERVICE_PLAN --name $WEBAPP_NAME --deployment-container-image-name $DOCKER_REGISTRY_URL/$GITHUB_REPOSITORY/$CONTAINER_NAME:$GITHUB_SHA
+
+  azure_set_container:
+    name: Set the Web App Container
+    runs-on: ubuntu-latest
+    needs: [ 'build_image', 'azure_create_app']
+    environment: 
+      name: 'qa'
+
+    steps:
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     - name: Set the Azure Web App Docker registry paramas
       uses: Azure/appservice-settings@v1
@@ -71,5 +84,11 @@ jobs:
                 "slotSetting": false
              }
           ]
+
+    - name: Load Web App
+        timeout-minutes: 2
+        continue-on-error: true
+        run: curl https://${{ env.WEBAPP_NAME }}.azurewebsites.net
+
 
 
