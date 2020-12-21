@@ -86,9 +86,9 @@ jobs:
           ]
 
     - name: Load Web App
-        timeout-minutes: 2
-        continue-on-error: true
-        run: curl https://${{ env.WEBAPP_NAME }}.azurewebsites.net
+      timeout-minutes: 2
+      continue-on-error: true
+      run: curl https://${{ env.WEBAPP_NAME }}.azurewebsites.net
 
 
 
