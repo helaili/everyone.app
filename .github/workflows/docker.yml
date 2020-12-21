@@ -10,7 +10,8 @@ env:
   WEBAPP_NAME: everyone-app-qa
   DOCKER_REGISTRY_URL: docker.pkg.github.com
   DOCKER_USERNAME: <token>
-  DOCKER_PASSWORD: ${{secrets.GPR_TOKEN}}
+  DOCKER_PASSWORD: ${{secrets.GITHUB_TOKEN}}
+  
 jobs:
   build_image:
     name: Build the docker image
@@ -23,9 +24,9 @@ jobs:
     - name: GHPR Docker Login
       uses: docker/login-action@v1
       with:
-        registry: docker.pkg.github.com
-        username: <token>
-        password: ${{secrets.GITHUB_TOKEN}}
+        registry: ${{ env.DOCKER_REGISTRY_URL }}
+        username: ${{ env.DOCKER_USERNAME }}
+        password: ${{ env.DOCKER_PASSWORD }}
     - name: Publish Docker image
       id: container_publish
       run: |
@@ -44,7 +45,7 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
     - name: Create the review app
       run: |
-        az webapp create --resource-group $RESOURCE_GROUP --plan $APP_SERVICE_PLAN --name $WEBAPP_NAME_PREFIX-$GITHUB_SHA --deployment-container-image-name $DOCKER_REGISTRY_URL/$GITHUB_REPOSITORY/$CONTAINER_NAME:$GITHUB_SHA
+        az webapp create --resource-group $RESOURCE_GROUP --plan $APP_SERVICE_PLAN --name $WEBAPP_NAME --deployment-container-image-name $DOCKER_REGISTRY_URL/$GITHUB_REPOSITORY/$CONTAINER_NAME:$GITHUB_SHA
         az webapp config container set --resource-group $RESOURCE_GROUP --name $WEBAPP_NAME --docker-registry-server-password $DOCKER_PASSWORD --docker-registry-server-user $DOCKER_USERNAME --docker-registry-server-url $DOCKER_REGISTRY_URL
         az webapp update -g $RESOURCE_GROUP -n $WEBAPP_NAME_PREFIX-$GITHUB_SHA --set tags.ref=$GITHUB_REF tags.type=review
   
