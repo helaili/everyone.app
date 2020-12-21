@@ -14,7 +14,7 @@
     "probot-app"
   ],
   "scripts": {
-    "start": "probot run ./index.js",
+    "start": "pwd && ls && probot run ./index.js",
     "test": "jest",
     "postinstall": "cp -R node_modules/probot probot/"
   },
