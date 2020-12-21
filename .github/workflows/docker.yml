@@ -11,7 +11,7 @@ env:
   WEBAPP_NAME: everyone-app-qa
   DOCKER_REGISTRY_URL: docker.pkg.github.com
   DOCKER_USERNAME: <token>
-  DOCKER_PASSWORD: ${{secrets.GITHUB_TOKEN}}
+  DOCKER_TOKEN: ${{secrets.DOCKER_TOKEN}}
 
 jobs:
   build_image:
@@ -27,7 +27,7 @@ jobs:
       with:
         registry: ${{ env.DOCKER_REGISTRY_URL }}
         username: ${{ env.DOCKER_USERNAME }}
-        password: ${{ env.DOCKER_PASSWORD }}
+        password: ${{ env.DOCKER_TOKEN }}
     - name: Publish Docker image
       id: container_publish
       run: |
@@ -80,7 +80,7 @@ jobs:
              },
              {
                 "name": "DOCKER_REGISTRY_SERVER_PASSWORD",
-                "value": "${{ env.DOCKER_PASSWORD }}",
+                "value": "${{ env.DOCKER_TOKEN }}",
                 "slotSetting": false
              }
           ]
