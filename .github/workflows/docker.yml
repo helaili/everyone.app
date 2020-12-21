@@ -1,18 +1,25 @@
-name: Build main branch
+name: Publishing
 
 on:
   push:
     branches: [ main ]
-
+env:
+  CONTAINER_NAME: everyone-app
+  RESOURCE_GROUP: everyone.app
+  APP_SERVICE_PLAN: east-us-linux-dev
+  WEBAPP_NAME: everyone-app-qa
+  DOCKER_REGISTRY_URL: docker.pkg.github.com
+  DOCKER_USERNAME: <token>
+  DOCKER_PASSWORD: ${{secrets.GPR_TOKEN}}
 jobs:
-  build:
-
+  build_image:
+    name: Build the docker image
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag docker.pkg.github.com/$GITHUB_REPOSITORY/everyone-app:$GITHUB_SHA
+      run: docker build . --file Dockerfile --tag $DOCKER_REGISTRY_URL/$GITHUB_REPOSITORY/$CONTAINER_NAME:$GITHUB_SHA
     - name: GHPR Docker Login
       uses: docker/login-action@v1
       with:
@@ -22,5 +29,23 @@ jobs:
     - name: Publish Docker image
       id: container_publish
       run: |
-        docker push docker.pkg.github.com/$GITHUB_REPOSITORY/everyone-app:$GITHUB_SHA
+        docker push $DOCKER_REGISTRY_URL/$GITHUB_REPOSITORY/$CONTAINER_NAME:$GITHUB_SHA
+  azure_create_app:
+    name: Create the app on Azure
+    runs-on: ubuntu-latest
+    
+    environment: 
+      name: 'qa'
+
+    steps:
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - name: Create the review app
+      run: |
+        az webapp create --resource-group $RESOURCE_GROUP --plan $APP_SERVICE_PLAN --name $WEBAPP_NAME_PREFIX-$GITHUB_SHA --deployment-container-image-name $DOCKER_REGISTRY_URL/$GITHUB_REPOSITORY/$CONTAINER_NAME:$GITHUB_SHA
+        az webapp config container set --resource-group $RESOURCE_GROUP --name $WEBAPP_NAME --docker-registry-server-password $DOCKER_PASSWORD --docker-registry-server-user $DOCKER_USERNAME --docker-registry-server-url $DOCKER_REGISTRY_URL
+        az webapp update -g $RESOURCE_GROUP -n $WEBAPP_NAME_PREFIX-$GITHUB_SHA --set tags.ref=$GITHUB_REF tags.type=review
+  
 
