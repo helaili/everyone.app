@@ -49,12 +49,12 @@ jobs:
     - name: Create the Azure Web App
       run: az webapp create --resource-group $RESOURCE_GROUP --plan $APP_SERVICE_PLAN --name $WEBAPP_NAME --deployment-container-image-name $DOCKER_REGISTRY_URL/$GITHUB_REPOSITORY/$CONTAINER_NAME:$GITHUB_SHA
 
-     - name: Set the Azure Web App Docker registry paramas
+    - name: Set the Azure Web App Docker registry paramas
       uses: Azure/appservice-settings@v1
       with:
-       app-name: ${{ env.WEBAPP_NAME }}
-       app-settings-json: |
-         [
+        app-name: ${{ env.WEBAPP_NAME }}
+        app-settings-json: |
+          [
              {
                  "name": "DOCKER_REGISTRY_SERVER_URL",
                  "value": "${{ env.DOCKER_REGISTRY_URL }}",
