@@ -102,5 +102,5 @@ jobs:
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
     - name: Set the environment variables
       run: |
-        az webapp config appsettings set -g $RESOURCE_GROUP -n ${{ matrix.env.webapp }} --settings APP_ID=${{ secrets.APP_ID }} PRIVATE_KEY=${{ secrets.PRIVATE_KEY }} WEBHOOK_SECRET=${{ secrets.WEBHOOK_SECRET }} WEBSITE_WEBDEPLOY_USE_SCM=true
+        az webapp config appsettings set -g $RESOURCE_GROUP -n ${{ matrix.env.webapp }} --settings APP_ID=${{ secrets.APP_ID }} PRIVATE_KEY=${{ secrets.PRIVATE_KEY }} WEBHOOK_SECRET=${{ secrets.WEBHOOK_SECRET }} WEBSITE_WEBDEPLOY_USE_SCM=true NODE_ENV=${{ matrix.env.webapp }}
     
