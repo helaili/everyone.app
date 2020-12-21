@@ -56,20 +56,20 @@ jobs:
         app-settings-json: |
           [
              {
-                 "name": "DOCKER_REGISTRY_SERVER_URL",
-                 "value": "${{ env.DOCKER_REGISTRY_URL }}",
-                 "slotSetting": false
+               "name": "DOCKER_REGISTRY_SERVER_URL",
+                "value": "${{ env.DOCKER_REGISTRY_URL }}",
+                "slotSetting": false
              },
              {
-                 "name": "DOCKER_REGISTRY_SERVER_USERNAME",
-                 "value": "${{ env.DOCKER_USERNAME  }}",
-                 "slotSetting": false
+                "name": "DOCKER_REGISTRY_SERVER_USERNAME",
+                "value": "${{ env.DOCKER_USERNAME  }}",
+                "slotSetting": false
              },
              {
-                 "name": "DOCKER_REGISTRY_SERVER_PASSWORD",
-                 "value": "${{ env.DOCKER_PASSWORD }}",
-                 "slotSetting": false
+                "name": "DOCKER_REGISTRY_SERVER_PASSWORD",
+                "value": "${{ env.DOCKER_PASSWORD }}",
+                "slotSetting": false
              }
-         ]
+          ]
 
 
