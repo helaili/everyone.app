@@ -1,3 +1,4 @@
+# AZURE_CREDENTIALS obtained with `az ad sp create-for-rbac --name "everyone.app" --sdk-auth --role contributor --scopes /subscriptions/xxxxx/resourceGroups/everyone.app`
 name: Publishing
 
 on:
@@ -11,7 +12,7 @@ env:
   DOCKER_REGISTRY_URL: docker.pkg.github.com
   DOCKER_USERNAME: <token>
   DOCKER_PASSWORD: ${{secrets.GITHUB_TOKEN}}
-  
+
 jobs:
   build_image:
     name: Build the docker image
@@ -31,6 +32,7 @@ jobs:
       id: container_publish
       run: |
         docker push $DOCKER_REGISTRY_URL/$GITHUB_REPOSITORY/$CONTAINER_NAME:$GITHUB_SHA
+  
   azure_create_app:
     name: Create the app on Azure
     runs-on: ubuntu-latest
@@ -43,6 +45,7 @@ jobs:
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
+
     - name: Create the review app
       run: |
         az webapp create --resource-group $RESOURCE_GROUP --plan $APP_SERVICE_PLAN --name $WEBAPP_NAME --deployment-container-image-name $DOCKER_REGISTRY_URL/$GITHUB_REPOSITORY/$CONTAINER_NAME:$GITHUB_SHA
