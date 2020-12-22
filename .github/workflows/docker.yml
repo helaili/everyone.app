@@ -68,21 +68,41 @@ jobs:
         app-name: ${{ env.WEBAPP_NAME }}
         app-settings-json: |
           [
-             {
-               "name": "DOCKER_REGISTRY_SERVER_URL",
-                "value": "${{ env.DOCKER_REGISTRY_URL }}",
-                "slotSetting": false
-             },
-             {
-                "name": "DOCKER_REGISTRY_SERVER_USERNAME",
-                "value": "${{ env.DOCKER_USERNAME  }}",
-                "slotSetting": false
-             },
-             {
-                "name": "DOCKER_REGISTRY_SERVER_PASSWORD",
-                "value": "${{ env.DOCKER_TOKEN }}",
-                "slotSetting": false
-             }
+            {
+              "name": "DOCKER_REGISTRY_SERVER_URL",
+              "value": "${{ env.DOCKER_REGISTRY_URL }}",
+              "slotSetting": false
+            },
+            {
+              "name": "DOCKER_REGISTRY_SERVER_USERNAME",
+              "value": "${{ env.DOCKER_USERNAME  }}",
+              "slotSetting": false
+            },
+            {
+              "name": "DOCKER_REGISTRY_SERVER_PASSWORD",
+              "value": "${{ env.DOCKER_TOKEN }}",
+              "slotSetting": false
+            },
+            {
+              "name": "APP_ID",
+              "value": "${{ secrets.APP_ID }}",
+              "slotSetting": false
+            },
+            {
+              "name": "PRIVATE_KEY",
+              "value": "${{ secrets.PRIVATE_KEY }}",
+              "slotSetting": false
+            },
+            {
+              "name": "WEBHOOK_SECRET",
+              "value": "${{ secrets.WEBHOOK_SECRET }}",
+              "slotSetting": false
+            },
+            {
+              "name": "PORT",
+              "value": "8080",
+              "slotSetting": false
+            }
           ]
 
     - name: Load Web App
