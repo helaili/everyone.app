@@ -21,9 +21,6 @@ module.exports = ({ app }) =>  {
     return createTeam(context, org, 'everyone').then( ({data: team}) => {
       context.log.debug({
         team: team
-      }).catch(err => {
-        // A team already created will generate an error
-        context.log.error(err) 
       })
       return populateTeam(context, org, team, 1, per_page)
     }).catch(error => {
