@@ -90,7 +90,7 @@ jobs:
         az webapp config appsettings set -g $RESOURCE_GROUP -n ${{ env.WEBAPP_NAME }} --settings APP_ID=${{ secrets.APP_ID }} PRIVATE_KEY=${{ secrets.PRIVATE_KEY }} WEBHOOK_SECRET=${{ secrets.WEBHOOK_SECRET }} NODE_ENV=qa PORT=8080
   
     - name: Load Web App
-      timeout-minutes: 2
+      timeout-minutes: 5
       continue-on-error: true
       run: curl https://${{ env.WEBAPP_NAME }}.azurewebsites.net
 
