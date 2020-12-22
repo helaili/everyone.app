@@ -89,6 +89,11 @@ jobs:
               "slotSetting": false
             },
             {
+              "name": "PRIVATE_KEY",
+              "value": "'${{ secrets.PRIVATE_KEY }}'",
+              "slotSetting": false
+            },
+            {
               "name": "WEBHOOK_SECRET",
               "value": "${{ secrets.WEBHOOK_SECRET }}",
               "slotSetting": false
