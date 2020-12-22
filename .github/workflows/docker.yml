@@ -82,29 +82,13 @@ jobs:
               "name": "DOCKER_REGISTRY_SERVER_PASSWORD",
               "value": "${{ env.DOCKER_TOKEN }}",
               "slotSetting": false
-            },
-            {
-              "name": "APP_ID",
-              "value": "${{ secrets.APP_ID }}",
-              "slotSetting": false
-            },
-            {
-              "name": "PRIVATE_KEY",
-              "value": "'${{ secrets.PRIVATE_KEY }}'",
-              "slotSetting": false
-            },
-            {
-              "name": "WEBHOOK_SECRET",
-              "value": "${{ secrets.WEBHOOK_SECRET }}",
-              "slotSetting": false
-            },
-            {
-              "name": "PORT",
-              "value": 8080,
-              "slotSetting": false
             }
           ]
 
+    - name: Set the environment variables
+      run: |
+        az webapp config appsettings set -g $RESOURCE_GROUP -n ${{ env.WEBAPP_NAME }} --settings APP_ID=${{ secrets.APP_ID }} PRIVATE_KEY=${{ secrets.PRIVATE_KEY }} WEBHOOK_SECRET=${{ secrets.WEBHOOK_SECRET }} NODE_ENV=qa PORT=8080
+  
     - name: Load Web App
       timeout-minutes: 2
       continue-on-error: true
