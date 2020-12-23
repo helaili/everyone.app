@@ -1,3 +1,6 @@
+# secrets.AZURE_CREDENTIALS was generated with the following command: 
+# az ad sp create-for-rbac --name "everyone.app" --sdk-auth --role contributor --scopes /subscriptions/xxxxx/resourceGroups/everyone.app
+
 name: Production deploy
 
 on:
@@ -6,7 +9,7 @@ on:
   workflow_dispatch:
 
 env:
-  NODE_VERSION: '12.x'                # set this to the node version to use
+  NODE_VERSION: '12.x' 
   RESOURCE_GROUP: 'everyone.app'
   CONTAINER_NAME: everyone-app
   DOCKER_REGISTRY_URL: docker.pkg.github.com
