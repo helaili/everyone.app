@@ -1,6 +1,6 @@
 # everyone.app
 
-> A GitHub App built with [Probot](https://github.com/probot/probot) that Maintains a team with all your organization members
+A GitHub App built with [Probot](https://github.com/probot/probot) that Maintains a team with all your organization members. Upon installation, an `everyone` team will be created in your organization and every member added to it. Every new member joining your organization will be added automatically. 
 
 ## Setup
 
