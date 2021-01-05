@@ -1,6 +1,6 @@
 # Security Policy
 
-## Privacy 
+## Privacy 
 
 This app is fully stateless, not data is stored. 
 
